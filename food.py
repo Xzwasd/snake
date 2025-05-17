@@ -1,11 +1,13 @@
 import pygame, sys, random
 from pygame.math import Vector2
+import time
 from settings import *
-#мяу
+
 
 class Food:
 	def __init__(self, snake_body):
 		self.position = self.generate_random_pos(snake_body)
+		self.spawn_time = time.time()
 
 	def draw(self):
 		food_rect = pygame.Rect(OFFSET + self.position.x * cell_size, OFFSET + self.position.y * cell_size,
@@ -21,4 +23,5 @@ class Food:
 		position = self.generate_random_cell()
 		while position in snake_body:
 			position = self.generate_random_cell()
+		self.spawn_time = time.time()
 		return position
