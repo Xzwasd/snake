@@ -12,7 +12,7 @@ class Food:
 	def draw(self):
 		food_rect = pygame.Rect(OFFSET + self.position.x * cell_size, OFFSET + self.position.y * cell_size,
 			cell_size, cell_size)
-		screen.blit(food_surface, food_rect)
+		screen.blit(food_image, food_rect)
 
 	def generate_random_cell(self):
 		x = random.randint(0, number_of_cells-1)

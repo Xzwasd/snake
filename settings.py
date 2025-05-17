@@ -1,8 +1,8 @@
 import pygame
 
 
-food_surface = pygame.image.load("assets/food.png")
-
+food_image = pygame.image.load("assets/food.png")
+food_speed_image = pygame.image.load("assets/Sprite-yellow.png")
 
 GREEN = (173, 204, 96)
 DARK_GREEN = (43, 51, 24)
