@@ -22,7 +22,6 @@ class Snake:
 			self.body = self.body[:-1]
 
 	def reset(self):
-
 		self.add_segment = False
 
 		# Возможные направления: вправо, влево, вниз, вверх

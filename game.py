@@ -10,8 +10,9 @@ class Game:
 	def __init__(self):
 		self.snake = Snake()
 		self.food = Food(self.snake.body)
-		self.state = "RUNNING"
+		self.state = "WAITING"
 		self.score = 0
+		self.show_start_message = True  # Флаг для показа подсказки один раз
 
 	def draw(self):
 		self.food.draw()
