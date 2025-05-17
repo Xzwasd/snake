@@ -1,7 +1,7 @@
 import pygame, sys, random
 from pygame.math import Vector2
 from settings import *
-
+#мяу
 
 class Food:
 	def __init__(self, snake_body):
