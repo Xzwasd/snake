@@ -7,7 +7,7 @@ from settings import *
 class Food:
 	def __init__(self, snake_body):
 		self.position = self.generate_random_pos(snake_body)
-		self.spawn_time = time.time()
+		self.spawn_time = time.time() # Запоминаем время появления еды
 
 	def draw(self):
 		food_rect = pygame.Rect(OFFSET + self.position.x * cell_size, OFFSET + self.position.y * cell_size,
@@ -23,5 +23,5 @@ class Food:
 		position = self.generate_random_cell()
 		while position in snake_body:
 			position = self.generate_random_cell()
-		self.spawn_time = time.time()
+		self.spawn_time = time.time() # Сброс таймера при новом размещении еды
 		return position

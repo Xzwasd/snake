@@ -20,6 +20,7 @@ class Game:
 	def update(self):
 		if self.state == "RUNNING":
 			current_time = time.time()
+			# Еда исчезает, если прошло больше 7 секунд
 			if current_time - self.food.spawn_time > 7:
 				self.food.position = self.food.generate_random_pos(self.snake.body)
 
