@@ -1,6 +1,7 @@
 from food import Food
 from snake import Snake
 from settings import *
+from UI import UI
 import time, sys, json, os
 
 
@@ -12,24 +13,9 @@ class Game:
 		self.state = "MENU"
 		self.score = 0
 		self.max_score = self.load_max_score()
-		self.continue_button_rect = pygame.Rect(0, 0, 250, 80)
-		self.menu_button_rect = pygame.Rect(0, 0, 250, 80)
-		self.vol_img_inactive = pygame.image.load("assets/volume_inactive.png").convert_alpha()
-		self.vol_img_active = pygame.image.load("assets/volume_active.png").convert_alpha()
-		# Приводим к размеру делений
-		self.vol_size = (32, 32)
-		self.vol_img_inactive = pygame.transform.scale(self.vol_img_inactive, self.vol_size)
-		self.vol_img_active = pygame.transform.scale(self.vol_img_active, self.vol_size)
-
 		self.music_volume = 5
 		pygame.mixer.music.set_volume(self.music_volume / 10)
-		self.score_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
-		self.pause_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
-		self.button_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 32)
-		self.title_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
-		self.menu_background = pygame.image.load("assets/menu_bg.png").convert()
-		self.button = pygame.image.load("assets/button_bg.png").convert()
-
+		self.ui = UI(self)
 		# Мигание подсказки
 		self.show_start_message = True
 		self.last_toggle_time = time.time()
@@ -37,144 +23,14 @@ class Game:
 
 	def draw(self):
 		if self.state == 'MENU':
-			self.draw_menu()
+			self.ui.draw_menu()
 		else:
 			self.food.draw()
 			self.snake.draw()
-			if self.state == "WAITING": #Начальное сообщение
-				self.draw_start_message()
-			if self.state == "PAUSED": #Пауза
-				self.draw_pause_message()
-
-	def draw_menu(self):
-		surface = pygame.display.get_surface()
-		width, height = surface.get_size()
-
-		# --- Фон меню ---
-		bg = pygame.image.load("assets/menu_bg.png").convert()
-		bg = pygame.transform.scale(bg, (width, height))
-		surface.blit(bg, (0, 0))
-
-		# --- Максимальный счет ---
-		high_score_text = self.button_font.render(f"High Score: {self.max_score}", True, (255, 255, 255))
-		high_score_rect = high_score_text.get_rect(center=(width // 2, height // 2 - 80))
-		screen.blit(high_score_text, high_score_rect)
-
-		# --- Название игры ---
-		title_text = self.title_font.render("SNAKE", True, (255, 255, 255))
-		title_rect = title_text.get_rect(center=(width // 2, height // 5))
-		surface.blit(title_text, title_rect)
-
-		# --- Кнопки с изображениями ---
-		# Загрузка и масштабирование картинок
-		start_img_raw = pygame.image.load("assets/button_bg.png").convert_alpha()
-		exit_img_raw = pygame.image.load("assets/button_bg.png").convert_alpha()
-		button_size = (250, 80)
-
-		self.start_img = pygame.transform.scale(start_img_raw, button_size)
-		self.exit_img = pygame.transform.scale(exit_img_raw, button_size)
-
-		# Позиции кнопок
-		start_pos = (width // 2 - button_size[0] // 2, height // 2)
-		exit_pos = (width // 2 - button_size[0] // 2, height // 2 + button_size[1] + 30)
-
-		self.start_button_rect = pygame.Rect(start_pos, button_size)
-		self.exit_button_rect = pygame.Rect(exit_pos, button_size)
-
-		# --- Отрисовка кнопок ---
-		# Start
-		surface.blit(self.start_img, self.start_button_rect)
-		start_text = self.button_font.render("Start Game", True, (255, 255, 255))
-		start_text_rect = start_text.get_rect(center=self.start_button_rect.center)
-		surface.blit(start_text, start_text_rect)
-
-		# Exit
-		surface.blit(self.exit_img, self.exit_button_rect)
-		exit_text = self.button_font.render("Exit", True, (255, 255, 255))
-		exit_text_rect = exit_text.get_rect(center=self.exit_button_rect.center)
-		surface.blit(exit_text, exit_text_rect)
-
-		# --- Отрисовка шкалы громкости картинками ---
-		volume_text = self.button_font.render(f"Volume: {self.music_volume}/10", True, (255, 255, 255))
-		volume_text_rect = volume_text.get_rect(center=(width // 2, height - 200))
-		surface.blit(volume_text, volume_text_rect)
-
-		# Расположение картинок
-		spacing = 8
-		total_width = 10 * self.vol_size[0] + 9 * spacing
-		start_x = width // 2 - total_width // 2
-		y_pos = volume_text_rect.bottom + 10
-
-		self.volume_rects = []
-		for i in range(10):
-			rect = pygame.Rect(start_x + i * (self.vol_size[0] + spacing),
-							   y_pos,
-							   self.vol_size[0],
-							   self.vol_size[1])
-			self.volume_rects.append(rect)
-			img = self.vol_img_active if i < self.music_volume else self.vol_img_inactive
-			surface.blit(img, rect.topleft)
-
-	def handle_menu_input(self, pos):
-		if self.start_button_rect.collidepoint(pos):
-			self.reset()
-		elif self.exit_button_rect.collidepoint(pos):
-			pygame.quit()
-			sys.exit()
-		for idx, rect in enumerate(self.volume_rects, start=1):
-			if rect.collidepoint(pos):
-				self.music_volume = idx
-				pygame.mixer.music.set_volume(self.music_volume / 10)
-				break
-
-	def draw_start_message(self):
-		if self.show_start_message:
-			start_surface = self.score_font.render("Press key to start", True, DARK_GREEN, )
-			text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
-			screen.blit(start_surface, text_rect)
-
-	def draw_pause_message(self): #отрисовка паузы
-		surface = pygame.display.get_surface()
-		width, height = surface.get_size()
-		self.continue_img = pygame.transform.scale(
-			pygame.image.load("assets/button_bg.png").convert_alpha(), (250, 80)
-		)
-		self.menu_img = pygame.transform.scale(
-			pygame.image.load("assets/button_bg.png").convert_alpha(), (250, 80)
-		)
-		# --- Затемнение ---
-		dark_overlay = pygame.Surface((width, height))
-		dark_overlay.set_alpha(40)
-		dark_overlay.fill((0, 0, 0))
-		surface.blit(dark_overlay, (0, 0))
-
-		# --- Текст "PAUSE" ---
-		text = self.pause_font.render("PAUSE", True, DARK_GREEN)
-		text_rect = text.get_rect(center=(width // 2, height // 2 - 100))
-		surface.blit(text, text_rect)
-
-		# --- Кнопки ---
-		button_gap = 30
-
-		# 1. Continue
-		self.continue_button_rect.center = (width // 2, height // 2)
-		surface.blit(self.continue_img, self.continue_button_rect)
-		continue_text = self.button_font.render("Continue", True, (255, 255, 255))
-		continue_text_rect = continue_text.get_rect(center=self.continue_button_rect.center)
-		surface.blit(continue_text, continue_text_rect)
-
-		# 2. Back to Menu
-		self.menu_button_rect.center = (width // 2, height // 2 + 80 + button_gap)
-		surface.blit(self.menu_img, self.menu_button_rect)
-		menu_text = self.button_font.render("Back to Menu", True, (255, 255, 255))
-		menu_text_rect = menu_text.get_rect(center=self.menu_button_rect.center)
-		surface.blit(menu_text, menu_text_rect)
-
-	def toggle_pause(self): #пауза
-		if self.state == "RUNNING":
-			self.state = "PAUSED"
-		elif self.state == "PAUSED":
-			self.state = "RUNNING"
+			if self.state == "WAITING":
+				self.ui.draw_start_message()
+			elif self.state == "PAUSED":
+				self.ui.draw_pause()
 
 	def update(self):
 		if self.state == "RUNNING":
