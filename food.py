@@ -1,4 +1,4 @@
-import pygame, sys, random
+import random
 from pygame.math import Vector2
 import time
 from settings import *
