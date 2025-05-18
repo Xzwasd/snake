@@ -53,6 +53,9 @@ while True:
 						else:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
+		if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #получение клика мыши
+			if game.state == "MENU":
+				game.handle_menu_input(event.pos)
 
 
 

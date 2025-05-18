@@ -1,7 +1,7 @@
 from food import Food
 from snake import Snake
 from settings import *
-import time
+import time, sys
 
 
 
@@ -9,18 +9,59 @@ class Game:
 	def __init__(self):
 		self.snake = Snake()
 		self.food = Food(self.snake.body)
-		self.state = "WAITING"
+		self.state = "MENU"
 		self.score = 0
 		self.score_font = pygame.font.Font(None, 40)
 		self.pause_font = pygame.font.Font(None, 70)
 
 	def draw(self):
-		self.food.draw()
-		self.snake.draw()
-		if self.state == "WAITING": #Начальное сообщение
-			self.draw_start_message()
-		if self.state == "PAUSED": #Пауза
-			self.draw_pause_message()
+		if self.state == 'MENU':
+			self.draw_menu()
+		else:
+			self.food.draw()
+			self.snake.draw()
+			if self.state == "WAITING": #Начальное сообщение
+				self.draw_start_message()
+			if self.state == "PAUSED": #Пауза
+				self.draw_pause_message()
+
+	def draw_menu(self):
+		surface = pygame.display.get_surface()
+		width, height = surface.get_size()
+		surface.fill(GREEN)
+
+		title_font = pygame.font.Font(None, 64)
+		button_font = pygame.font.Font(None, 36)
+
+		# Заголовок
+		title_text = title_font.render("SNAKE", True, (0, 255, 0))
+		title_rect = title_text.get_rect(center=(width // 2, height // 4))
+		surface.blit(title_text, title_rect)
+
+		# Кнопка "Start Game"
+		button_width, button_height = 200, 60
+		start_x = (width - button_width) // 2
+		start_y = height // 2
+		self.start_button_rect = pygame.Rect(start_x, start_y, button_width, button_height)
+		pygame.draw.rect(surface, (0, 100, 0), self.start_button_rect)
+		start_text = button_font.render("Start Game", True, (255, 255, 255))
+		start_rect = start_text.get_rect(center=self.start_button_rect.center)
+		surface.blit(start_text, start_rect)
+
+		# Кнопка "Exit"
+		exit_y = start_y + button_height + 30  # отступ 30px между кнопками
+		self.exit_button_rect = pygame.Rect(start_x, exit_y, button_width, button_height)
+		pygame.draw.rect(surface, (100, 0, 0), self.exit_button_rect)
+		exit_text = button_font.render("Exit", True, (255, 255, 255))
+		exit_rect = exit_text.get_rect(center=self.exit_button_rect.center)
+		surface.blit(exit_text, exit_rect)
+
+	def handle_menu_input(self, pos):
+		if self.start_button_rect.collidepoint(pos):
+			self.state = "WAITING"
+		elif self.exit_button_rect.collidepoint(pos):
+			pygame.quit()
+			sys.exit()
 
 	def draw_start_message(self): #отрисовка подсказки во время ожидания
 		start_surface = self.score_font.render("Press key to start", True, DARK_GREEN)
