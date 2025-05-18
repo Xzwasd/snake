@@ -1,4 +1,4 @@
-import pygame, sys, random
+import sys
 from pygame.math import Vector2
 from game import Game
 from settings import *
@@ -54,6 +54,8 @@ while True:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
 
+
+
 	#Drawing
 	screen.fill(GREEN)
 	pygame.draw.rect(screen, DARK_GREEN,
@@ -64,10 +66,7 @@ while True:
 	screen.blit(title_surface, (OFFSET-5, 20))
 	screen.blit(score_surface, (OFFSET-5, OFFSET + cell_size*number_of_cells +10))
 
-	if game.state == "WAITING" and game.show_start_message:
-		start_surface = score_font.render("Press key to start", True, DARK_GREEN, GREEN)
-		text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
-		screen.blit(start_surface, text_rect)
+
 
 	pygame.display.update()
 	clock.tick(60)
