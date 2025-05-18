@@ -39,7 +39,7 @@ class Game:
 		button_font = pygame.font.Font(None, 36)
 
 		# Заголовок
-		title_text = title_font.render("SNAKE", True, (0, 255, 0))
+		title_text = title_font.render("SNAKE", True, DARK_GREEN)
 		title_rect = title_text.get_rect(center=(width // 2, height // 4))
 		surface.blit(title_text, title_rect)
 

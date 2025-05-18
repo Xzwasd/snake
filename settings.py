@@ -2,8 +2,8 @@ import pygame
 
 
 food_image = pygame.image.load("assets/food.png")
-food_speed_image = pygame.image.load("assets/Sprite-yellow.png")
-
+food_speed_image = pygame.image.load("assets/yellow.png")
+snake_title = pygame.image.load
 
 
 GREEN = (173, 204, 96)

@@ -78,7 +78,5 @@ while True:
 	screen.blit(title_surface, (OFFSET-5, 20))
 	screen.blit(score_surface, (OFFSET-5, OFFSET + cell_size*number_of_cells +10))
 
-
-
 	pygame.display.update()
 	clock.tick(60)
