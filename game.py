@@ -17,20 +17,27 @@ class Game:
 	def draw(self):
 		self.food.draw()
 		self.snake.draw()
-		if self.state == "WAITING":
+		if self.state == "WAITING": #Начальное сообщение
 			self.draw_start_message()
-		if self.state == "PAUSED":
+		if self.state == "PAUSED": #Пауза
 			self.draw_pause_message()
 
 	def draw_start_message(self): #отрисовка подсказки во время ожидания
-		start_surface = self.score_font.render("Press key to start", True, DARK_GREEN, GREEN)
+		start_surface = self.score_font.render("Press key to start", True, DARK_GREEN)
 		text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
 		screen.blit(start_surface, text_rect)
 
 	def draw_pause_message(self): #отрисовка паузы
-		start_surface = self.pause_font.render("PAUSE", True, DARK_GREEN, GREEN)
-		text_rect = start_surface.get_rect(center=(screen.get_width() // 2 + 30, screen.get_height() // 2 + 30))
-		screen.blit(start_surface, text_rect)
+		surface = pygame.display.get_surface()
+		#Затемнение
+		dark_overlay = pygame.Surface(surface.get_size())
+		dark_overlay.set_alpha(40)  #Прозрачность
+		dark_overlay.fill((0, 0, 0))
+		surface.blit(dark_overlay, (0, 0))
+		#Пауза
+		text = self.pause_font.render("PAUSE", True, DARK_GREEN)
+		text_rect = text.get_rect(center=(screen.get_width() // 2 + 30, screen.get_height() // 2 + 30))
+		screen.blit(text, text_rect)
 
 	def toggle_pause(self): #пауза
 		if self.state == "RUNNING":
