@@ -8,7 +8,7 @@ pygame.init()
 title_font = pygame.font.Font(None, 60)
 score_font = pygame.font.Font(None, 40)
 
-pygame.display.set_caption("Retro Snake")
+pygame.display.set_caption("Medival Snake")
 
 clock = pygame.time.Clock()
 
@@ -80,7 +80,7 @@ while True:
 			game.last_toggle_time = current_time
 
 	game.draw()
-	title_surface = title_font.render("Retro Snake", True, DARK_GREEN)
+	title_surface = title_font.render("Medival Snake", True, DARK_GREEN)
 	score_surface = score_font.render(str(game.score), True, DARK_GREEN)
 	screen.blit(title_surface, (OFFSET-5, 20))
 	screen.blit(score_surface, (OFFSET-5, OFFSET + cell_size*number_of_cells +10))
