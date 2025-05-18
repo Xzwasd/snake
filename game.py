@@ -1,7 +1,7 @@
 from food import Food
 from snake import Snake
 from settings import *
-import time, sys
+import time, sys, json, os
 
 
 
@@ -11,6 +11,7 @@ class Game:
 		self.food = Food(self.snake.body)
 		self.state = "MENU"
 		self.score = 0
+		self.max_score = self.load_max_score()
 		self.continue_button_rect = pygame.Rect(0, 0, 250, 80)
 		self.menu_button_rect = pygame.Rect(0, 0, 250, 80)
 		self.score_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
@@ -44,6 +45,11 @@ class Game:
 		bg = pygame.image.load("assets/menu_bg.png").convert()
 		bg = pygame.transform.scale(bg, (width, height))
 		surface.blit(bg, (0, 0))
+
+		# --- Максимальный счет ---
+		high_score_text = self.button_font.render(f"High Score: {self.max_score}", True, (255, 255, 255))
+		high_score_rect = high_score_text.get_rect(center=(width // 2, height // 2 - 80))
+		screen.blit(high_score_text, high_score_rect)
 
 		# --- Название игры ---
 		title_text = self.title_font.render("SNAKE", True, (255, 255, 255))
@@ -166,6 +172,9 @@ class Game:
 			self.game_over()
 
 	def game_over(self):
+		if self.score > self.max_score:
+			self.max_score = self.score
+			self.save_max_score()
 		self.snake.reset()
 		self.food.position = self.food.generate_random_pos(self.snake.body)
 		self.state = "WAITING"
@@ -177,3 +186,18 @@ class Game:
 		self.food = Food(self.snake.body)
 		self.score = 0
 		self.state = "WAITING"
+
+	def load_max_score(self):
+		path = "data/max_score.json"
+		if not os.path.exists(path):
+			with open(path, "w") as f:
+				json.dump({"max_score": 0}, f)
+			return 0
+		with open(path, "r") as f:
+			data = json.load(f)
+			return data.get("max_score", 0)
+
+	def save_max_score(self):
+		path = "data/max_score.json"
+		with open(path, "w") as f:
+			json.dump({"max_score": self.max_score}, f)
