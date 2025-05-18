@@ -94,7 +94,7 @@ class Game:
 
 	def draw_start_message(self):
 		if self.show_start_message:
-			start_surface = self.score_font.render("Press key to start", True, DARK_GREEN, GREEN)
+			start_surface = self.score_font.render("Press key to start", True, DARK_GREEN, )
 			text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
 			screen.blit(start_surface, text_rect)
 

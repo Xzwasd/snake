@@ -1,8 +1,7 @@
 import pygame
 
 
-food_image = pygame.image.load("assets/food.png")
-food_speed_image = pygame.image.load("assets/yellow.png")
+food_image = pygame.image.load("assets/apple.png")
 
 snake_title = pygame.image.load
 
