@@ -14,6 +14,15 @@ class Game:
 		self.max_score = self.load_max_score()
 		self.continue_button_rect = pygame.Rect(0, 0, 250, 80)
 		self.menu_button_rect = pygame.Rect(0, 0, 250, 80)
+		self.vol_img_inactive = pygame.image.load("assets/volume_inactive.png").convert_alpha()
+		self.vol_img_active = pygame.image.load("assets/volume_active.png").convert_alpha()
+		# Приводим к размеру делений
+		self.vol_size = (32, 32)
+		self.vol_img_inactive = pygame.transform.scale(self.vol_img_inactive, self.vol_size)
+		self.vol_img_active = pygame.transform.scale(self.vol_img_active, self.vol_size)
+
+		self.music_volume = 5
+		pygame.mixer.music.set_volume(self.music_volume / 10)
 		self.score_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
 		self.pause_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
 		self.button_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 32)
@@ -85,12 +94,38 @@ class Game:
 		exit_text_rect = exit_text.get_rect(center=self.exit_button_rect.center)
 		surface.blit(exit_text, exit_text_rect)
 
+		# --- Отрисовка шкалы громкости картинками ---
+		volume_text = self.button_font.render(f"Volume: {self.music_volume}/10", True, (255, 255, 255))
+		volume_text_rect = volume_text.get_rect(center=(width // 2, height - 200))
+		surface.blit(volume_text, volume_text_rect)
+
+		# Расположение картинок
+		spacing = 8
+		total_width = 10 * self.vol_size[0] + 9 * spacing
+		start_x = width // 2 - total_width // 2
+		y_pos = volume_text_rect.bottom + 10
+
+		self.volume_rects = []
+		for i in range(10):
+			rect = pygame.Rect(start_x + i * (self.vol_size[0] + spacing),
+							   y_pos,
+							   self.vol_size[0],
+							   self.vol_size[1])
+			self.volume_rects.append(rect)
+			img = self.vol_img_active if i < self.music_volume else self.vol_img_inactive
+			surface.blit(img, rect.topleft)
+
 	def handle_menu_input(self, pos):
 		if self.start_button_rect.collidepoint(pos):
 			self.reset()
 		elif self.exit_button_rect.collidepoint(pos):
 			pygame.quit()
 			sys.exit()
+		for idx, rect in enumerate(self.volume_rects, start=1):
+			if rect.collidepoint(pos):
+				self.music_volume = idx
+				pygame.mixer.music.set_volume(self.music_volume / 10)
+				break
 
 	def draw_start_message(self):
 		if self.show_start_message:

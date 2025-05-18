@@ -5,9 +5,12 @@ from settings import *
 import time
 
 pygame.init()
+pygame.mixer.init()
 title_font = pygame.font.Font(None, 60)
 score_font = pygame.font.Font(None, 40)
-
+pygame.mixer.music.load("assets/bg_music.mp3")
+pygame.mixer.music.set_volume(0.3)
+pygame.mixer.music.play(-1)
 pygame.display.set_caption("Medival Snake")
 
 clock = pygame.time.Clock()
