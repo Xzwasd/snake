@@ -13,7 +13,7 @@ class Game:
 		self.score = 0
 		self.score_font = pygame.font.Font(None, 40)
 		self.pause_font = pygame.font.Font(None, 70)
-		#Ирина
+
 		# Мигание подсказки
 		self.show_start_message = True
 		self.last_toggle_time = time.time()
