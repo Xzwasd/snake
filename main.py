@@ -54,14 +54,21 @@ while True:
 						else:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
-		if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #получение клика мыши
+		if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #в меню
 			if game.state == "MENU":
 				game.handle_menu_input(event.pos)
-
+		if game.state == "PAUSED": #обработка кликов в паузе
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if game.continue_button_rect.collidepoint(event.pos):
+					game.state = "RUNNING"
+				elif game.menu_button_rect.collidepoint(event.pos):
+					game.state = "MENU"
 
 
 	#Drawing
-	screen.fill(GREEN)
+	bg_raw = pygame.image.load("assets/game_bg.png").convert()
+	surface = pygame.display.get_surface()
+	surface.blit(bg_raw, (0, 0))
 	pygame.draw.rect(screen, DARK_GREEN,
 		(OFFSET-5, OFFSET-5, cell_size*number_of_cells+10, cell_size*number_of_cells+10), 5)
 

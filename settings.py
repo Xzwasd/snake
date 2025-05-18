@@ -3,6 +3,7 @@ import pygame
 
 food_image = pygame.image.load("assets/food.png")
 food_speed_image = pygame.image.load("assets/yellow.png")
+
 snake_title = pygame.image.load
 
 

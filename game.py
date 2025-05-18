@@ -11,8 +11,14 @@ class Game:
 		self.food = Food(self.snake.body)
 		self.state = "MENU"
 		self.score = 0
-		self.score_font = pygame.font.Font(None, 40)
-		self.pause_font = pygame.font.Font(None, 70)
+		self.continue_button_rect = pygame.Rect(0, 0, 250, 80)
+		self.menu_button_rect = pygame.Rect(0, 0, 250, 80)
+		self.score_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
+		self.pause_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
+		self.button_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 32)
+		self.title_font = pygame.font.Font("assets/alagard-12px-unicode.ttf", 64)
+		self.menu_background = pygame.image.load("assets/menu_bg.png").convert()
+		self.button = pygame.image.load("assets/button_bg.png").convert()
 
 		# Мигание подсказки
 		self.show_start_message = True
@@ -33,37 +39,49 @@ class Game:
 	def draw_menu(self):
 		surface = pygame.display.get_surface()
 		width, height = surface.get_size()
-		surface.fill(GREEN)
 
-		title_font = pygame.font.Font(None, 64)
-		button_font = pygame.font.Font(None, 36)
+		# --- Фон меню ---
+		bg = pygame.image.load("assets/menu_bg.png").convert()
+		bg = pygame.transform.scale(bg, (width, height))
+		surface.blit(bg, (0, 0))
 
-		# Заголовок
-		title_text = title_font.render("SNAKE", True, DARK_GREEN)
-		title_rect = title_text.get_rect(center=(width // 2, height // 4))
+		# --- Название игры ---
+		title_text = self.title_font.render("SNAKE", True, (255, 255, 255))
+		title_rect = title_text.get_rect(center=(width // 2, height // 5))
 		surface.blit(title_text, title_rect)
 
-		# Кнопка "Start Game"
-		button_width, button_height = 200, 60
-		start_x = (width - button_width) // 2
-		start_y = height // 2
-		self.start_button_rect = pygame.Rect(start_x, start_y, button_width, button_height)
-		pygame.draw.rect(surface, (0, 100, 0), self.start_button_rect)
-		start_text = button_font.render("Start Game", True, (255, 255, 255))
-		start_rect = start_text.get_rect(center=self.start_button_rect.center)
-		surface.blit(start_text, start_rect)
+		# --- Кнопки с изображениями ---
+		# Загрузка и масштабирование картинок
+		start_img_raw = pygame.image.load("assets/button_bg.png").convert_alpha()
+		exit_img_raw = pygame.image.load("assets/button_bg.png").convert_alpha()
+		button_size = (250, 80)
 
-		# Кнопка "Exit"
-		exit_y = start_y + button_height + 30  # отступ 30px между кнопками
-		self.exit_button_rect = pygame.Rect(start_x, exit_y, button_width, button_height)
-		pygame.draw.rect(surface, (100, 0, 0), self.exit_button_rect)
-		exit_text = button_font.render("Exit", True, (255, 255, 255))
-		exit_rect = exit_text.get_rect(center=self.exit_button_rect.center)
-		surface.blit(exit_text, exit_rect)
+		self.start_img = pygame.transform.scale(start_img_raw, button_size)
+		self.exit_img = pygame.transform.scale(exit_img_raw, button_size)
+
+		# Позиции кнопок
+		start_pos = (width // 2 - button_size[0] // 2, height // 2)
+		exit_pos = (width // 2 - button_size[0] // 2, height // 2 + button_size[1] + 30)
+
+		self.start_button_rect = pygame.Rect(start_pos, button_size)
+		self.exit_button_rect = pygame.Rect(exit_pos, button_size)
+
+		# --- Отрисовка кнопок ---
+		# Start
+		surface.blit(self.start_img, self.start_button_rect)
+		start_text = self.button_font.render("Start Game", True, (255, 255, 255))
+		start_text_rect = start_text.get_rect(center=self.start_button_rect.center)
+		surface.blit(start_text, start_text_rect)
+
+		# Exit
+		surface.blit(self.exit_img, self.exit_button_rect)
+		exit_text = self.button_font.render("Exit", True, (255, 255, 255))
+		exit_text_rect = exit_text.get_rect(center=self.exit_button_rect.center)
+		surface.blit(exit_text, exit_text_rect)
 
 	def handle_menu_input(self, pos):
 		if self.start_button_rect.collidepoint(pos):
-			self.state = "WAITING"
+			self.reset()
 		elif self.exit_button_rect.collidepoint(pos):
 			pygame.quit()
 			sys.exit()
@@ -76,15 +94,40 @@ class Game:
 
 	def draw_pause_message(self): #отрисовка паузы
 		surface = pygame.display.get_surface()
-		#Затемнение
-		dark_overlay = pygame.Surface(surface.get_size())
-		dark_overlay.set_alpha(40)  #Прозрачность
+		width, height = surface.get_size()
+		self.continue_img = pygame.transform.scale(
+			pygame.image.load("assets/button_bg.png").convert_alpha(), (250, 80)
+		)
+		self.menu_img = pygame.transform.scale(
+			pygame.image.load("assets/button_bg.png").convert_alpha(), (250, 80)
+		)
+		# --- Затемнение ---
+		dark_overlay = pygame.Surface((width, height))
+		dark_overlay.set_alpha(40)
 		dark_overlay.fill((0, 0, 0))
 		surface.blit(dark_overlay, (0, 0))
-		#Пауза
+
+		# --- Текст "PAUSE" ---
 		text = self.pause_font.render("PAUSE", True, DARK_GREEN)
-		text_rect = text.get_rect(center=(screen.get_width() // 2 + 30, screen.get_height() // 2 + 30))
-		screen.blit(text, text_rect)
+		text_rect = text.get_rect(center=(width // 2, height // 2 - 100))
+		surface.blit(text, text_rect)
+
+		# --- Кнопки ---
+		button_gap = 30
+
+		# 1. Continue
+		self.continue_button_rect.center = (width // 2, height // 2)
+		surface.blit(self.continue_img, self.continue_button_rect)
+		continue_text = self.button_font.render("Continue", True, (255, 255, 255))
+		continue_text_rect = continue_text.get_rect(center=self.continue_button_rect.center)
+		surface.blit(continue_text, continue_text_rect)
+
+		# 2. Back to Menu
+		self.menu_button_rect.center = (width // 2, height // 2 + 80 + button_gap)
+		surface.blit(self.menu_img, self.menu_button_rect)
+		menu_text = self.button_font.render("Back to Menu", True, (255, 255, 255))
+		menu_text_rect = menu_text.get_rect(center=self.menu_button_rect.center)
+		surface.blit(menu_text, menu_text_rect)
 
 	def toggle_pause(self): #пауза
 		if self.state == "RUNNING":
@@ -128,3 +171,9 @@ class Game:
 		self.state = "WAITING"
 		self.score = 0
 		#self.snake.wall_hit_sound.play()
+
+	def reset(self): #новая игра
+		self.snake = Snake()
+		self.food = Food(self.snake.body)
+		self.score = 0
+		self.state = "WAITING"
