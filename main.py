@@ -2,6 +2,7 @@ import sys
 from pygame.math import Vector2
 from game import Game
 from settings import *
+import time
 
 pygame.init()
 title_font = pygame.font.Font(None, 60)
@@ -63,6 +64,14 @@ while True:
 	screen.fill(GREEN)
 	pygame.draw.rect(screen, DARK_GREEN,
 		(OFFSET-5, OFFSET-5, cell_size*number_of_cells+10, cell_size*number_of_cells+10), 5)
+
+	# Мигание подсказки
+	if game.state == "WAITING":
+		current_time = time.time()
+		if current_time - game.last_toggle_time > game.blink_interval:
+			game.show_start_message = not game.show_start_message
+			game.last_toggle_time = current_time
+
 	game.draw()
 	title_surface = title_font.render("Retro Snake", True, DARK_GREEN)
 	score_surface = score_font.render(str(game.score), True, DARK_GREEN)

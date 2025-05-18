@@ -14,6 +14,11 @@ class Game:
 		self.score_font = pygame.font.Font(None, 40)
 		self.pause_font = pygame.font.Font(None, 70)
 
+		# Мигание подсказки
+		self.show_start_message = True
+		self.last_toggle_time = time.time()
+		self.blink_interval = 0.7
+
 	def draw(self):
 		if self.state == 'MENU':
 			self.draw_menu()
@@ -63,10 +68,11 @@ class Game:
 			pygame.quit()
 			sys.exit()
 
-	def draw_start_message(self): #отрисовка подсказки во время ожидания
-		start_surface = self.score_font.render("Press key to start", True, DARK_GREEN)
-		text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
-		screen.blit(start_surface, text_rect)
+	def draw_start_message(self):
+		if self.show_start_message:
+			start_surface = self.score_font.render("Press key to start", True, DARK_GREEN, GREEN)
+			text_rect = start_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+			screen.blit(start_surface, text_rect)
 
 	def draw_pause_message(self): #отрисовка паузы
 		surface = pygame.display.get_surface()
@@ -93,13 +99,10 @@ class Game:
 			if current_time - self.food.spawn_time > 7:
 				self.food.position = self.food.generate_random_pos(self.snake.body)
 
-
 			self.snake.update()
 			self.check_collision_with_food()
 			self.check_collision_with_edges()
 			self.check_collision_with_tail()
-			self.draw_start_message()
-
 
 	def check_collision_with_food(self):
 		if self.snake.body[0] == self.food.position:
