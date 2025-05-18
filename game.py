@@ -18,6 +18,12 @@ class Game:
 		self.food.draw()
 		self.snake.draw()
 
+	def toggle_pause(self): #пауза
+		if self.state == "RUNNING":
+			self.state = "PAUSED"
+		elif self.state == "PAUSED":
+			self.state = "RUNNING"
+
 	def update(self):
 		if self.state == "RUNNING":
 			current_time = time.time()

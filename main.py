@@ -29,6 +29,9 @@ while True:
 				if game.state == "STOPPED":
 					game.state = "WAITING"
 					game.show_start_message = False
+				if event.key == pygame.K_ESCAPE:
+					game.toggle_pause()
+
 
 				if game.state in ["WAITING", "RUNNING"]:
 					new_direction = None
