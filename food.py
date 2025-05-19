@@ -12,7 +12,8 @@ class Food:
 	def draw(self):
 		food_rect = pygame.Rect(OFFSET + self.position.x * cell_size, OFFSET + self.position.y * cell_size,
 			cell_size, cell_size)
-		screen.blit(food_image, food_rect)
+		self.food_ige = pygame.transform.scale(food_image, (28, 28))
+		screen.blit(self.food_ige, food_rect)
 
 	def generate_random_cell(self):
 		x = random.randint(0, number_of_cells-1)
@@ -25,3 +26,4 @@ class Food:
 			position = self.generate_random_cell()
 		self.spawn_time = time.time() # Сброс таймера при новом размещении еды
 		return position
+
