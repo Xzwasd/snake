@@ -1,6 +1,6 @@
 import pygame
 
-
+font = 'assets/fonts/alagard-12px-unicode.ttf'
 food_image = pygame.image.load("assets/images/apple.png")
 
 #snake_title = pygame.image.load

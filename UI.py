@@ -1,4 +1,4 @@
-import pygame
+from settings import *
 
 class UI:
 	def __init__(self, game):
@@ -8,10 +8,10 @@ class UI:
 		width, height = surface.get_size()
 
 		# --- Шрифты ---
-		self.score_font = pygame.font.Font("assets/fonts/alagard-12px-unicode.ttf", 64)
-		self.pause_font = pygame.font.Font("assets/fonts/alagard-12px-unicode.ttf", 64)
-		self.button_font = pygame.font.Font("assets/fonts/alagard-12px-unicode.ttf", 32)
-		self.title_font = pygame.font.Font("assets/fonts/alagard-12px-unicode.ttf", 64)
+		self.score_font = pygame.font.Font(font, 32)
+		self.pause_font = pygame.font.Font(font, 64)
+		self.button_font = pygame.font.Font(font, 32)
+		self.title_font = pygame.font.Font(font, 64)
 
 		# --- Изображения ---
 		self.menu_background = pygame.image.load("assets/images/menu_bg.png").convert()
@@ -144,6 +144,10 @@ class UI:
 		title_text = self.title_font.render("Game Over", True, (255, 0, 0))
 		title_rect = title_text.get_rect(center=(width // 2, height // 4))
 		surface.blit(title_text, title_rect)
+		# Надпись "Счет"
+		title_text = self.score_font.render(f"Score: {self.game.score}", True, (232, 223, 92))
+		title_rect = title_text.get_rect(center=(width // 2, height // 3))
+		surface.blit(title_text, title_rect)
 
 		# Кнопки "Начать заново" и "Выйти в меню"
 		button_size = (250, 80)
@@ -167,7 +171,14 @@ class UI:
 
 	def draw_start_message(self):
 		if self.game.waiting_flag:
-			text = self.score_font.render("Press key to start", True, (0, 150, 0))
+			text = self.pause_font.render("Press key to start", True, (0, 150, 0))
 			rect = text.get_rect(center=self.screen.get_rect().center)
 			self.screen.blit(text, rect)
+
+	def draw_score(self):
+		surface = self.screen
+		width, height = surface.get_size()
+		score_pos = (width // 2, height - (OFFSET // 2))
+		score_surface = self.score_font.render(f'Score {str(self.game.score)}', True, DARK_GREEN)
+		screen.blit(score_surface, score_pos)
 

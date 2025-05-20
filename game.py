@@ -30,11 +30,13 @@ class Game:
 			self.snake.draw()
 			if self.state == "WAITING":
 				self.ui.draw_start_message()
+				self.ui.draw_score()
 			elif self.state == "PAUSED":
 				self.ui.draw_pause()
 			elif self.state == "DEAD":
 				self.ui.draw_game_over()
-
+			elif self.state == "RUNNING":
+				self.ui.draw_score()
 	def update(self):
 		if self.state == "RUNNING":
 			current_time = time.time()

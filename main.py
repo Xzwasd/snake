@@ -7,8 +7,8 @@ import time
 
 pygame.init()
 pygame.mixer.init()
-title_font = pygame.font.Font(None, 60)
-score_font = pygame.font.Font(None, 40)
+title_font = pygame.font.Font(font, 60)
+score_font = pygame.font.Font(font, 40)
 pygame.mixer.music.load("assets/sounds/bg_music.mp3")
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
@@ -120,10 +120,6 @@ while True:
 			game.last_toggle_time = current_time
 
 	game.draw()
-	title_surface = title_font.render("Medival Snake", True, DARK_GREEN)
-	score_surface = score_font.render(str(game.score), True, DARK_GREEN)
-	screen.blit(title_surface, (OFFSET-5, 20))
-	screen.blit(score_surface, (OFFSET-5, OFFSET + cell_size*number_of_cells +10))
 
 	pygame.display.update()
 	clock.tick(60)
