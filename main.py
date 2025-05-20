@@ -29,14 +29,9 @@ while True:
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			sys.exit()
-
+		print(game.is_starting)
 		if event.type == pygame.KEYDOWN:
 			if event.type == pygame.KEYDOWN:
-				if game.state == "STOPPED":
-					game.state = "WAITING"
-					game.show_start_message = False
-
-
 				if game.state in ["WAITING", "RUNNING"]:
 					new_direction = None
 					if event.key == pygame.K_UP:
@@ -56,8 +51,11 @@ while True:
 						# Проверка на то, что новое направление не противоположно текущему
 						if new_direction + game.snake.direction != Vector2(0, 0):
 							game.snake.direction = new_direction
-							if game.state == "WAITING":
+							if game.state == "WAITING" and game.is_starting:
 								game.state = "RUNNING"
+								print(game.waiting_flag)
+								game.is_starting = False
+								print(game.waiting_flag)
 						else:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
@@ -82,7 +80,14 @@ while True:
 			if game.state == "RUNNING":
 				game.state = "PAUSED"
 			elif game.state == "PAUSED":
-				game.state = "RUNNING"
+				# Если стартовая фаза, возвращаем в WAITING, но не запускаем игру
+				if game.is_starting:
+					game.state = "WAITING"
+				else:
+					game.state = "RUNNING"
+			elif game.state == "WAITING":
+				game.state = "PAUSED"
+
 
 		if game.state == "PAUSED":
 			UI.draw_pause()
@@ -92,7 +97,7 @@ while True:
 					game.state = "RUNNING"
 				elif UI.game.menu_button_rect.collidepoint(event.pos):
 					game.state = "MENU"
-
+		#смерть
 		if game.state == "DEAD":
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				if game.ui.restart_button_rect.collidepoint(event.pos):
@@ -111,7 +116,7 @@ while True:
 	if game.state == "WAITING":
 		current_time = time.time()
 		if current_time - game.last_toggle_time > game.blink_interval:
-			game.show_start_message = not game.show_start_message
+			game.waiting_flag = not game.waiting_flag
 			game.last_toggle_time = current_time
 
 	game.draw()

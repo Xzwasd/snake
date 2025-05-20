@@ -166,7 +166,7 @@ class UI:
 		surface.blit(menu_text, menu_text.get_rect(center=self.back_to_menu_button_rect.center))
 
 	def draw_start_message(self):
-		if self.game.show_start_message:
+		if self.game.waiting_flag:
 			text = self.score_font.render("Press key to start", True, (0, 150, 0))
 			rect = text.get_rect(center=self.screen.get_rect().center)
 			self.screen.blit(text, rect)

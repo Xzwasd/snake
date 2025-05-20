@@ -2,7 +2,7 @@ from food import Food
 from snake import Snake
 from settings import *
 from UI import UI
-import time, sys, json, os
+import time, json, os
 
 
 
@@ -17,7 +17,8 @@ class Game:
 		pygame.mixer.music.set_volume(self.music_volume / 10)
 		self.ui = UI(self)
 		# Мигание подсказки
-		self.show_start_message = True
+		self.waiting_flag = True
+		self.is_starting = True
 		self.last_toggle_time = time.time()
 		self.blink_interval = 0.7
 
@@ -78,6 +79,8 @@ class Game:
 		self.food = Food(self.snake.body)
 		self.score = 0
 		self.state = "WAITING"
+		self.waiting_flag = True
+		self.is_starting = True
 
 	def load_max_score(self):
 		path = "data/max_score.json"
