@@ -131,6 +131,40 @@ class UI:
 		menu_text = self.button_font.render("Menu", True, (255, 255, 255))
 		surface.blit(menu_text, menu_text.get_rect(center=self.game.menu_button_rect.center))
 
+	def draw_game_over(self):
+		surface = self.screen
+		width, height = surface.get_size()
+
+		overlay = pygame.Surface((width, height))
+		overlay.set_alpha(150)
+		overlay.fill((0, 0, 0))
+		surface.blit(overlay, (0, 0))
+
+		# Надпись "Игра окончена"
+		title_text = self.title_font.render("Game Over", True, (255, 0, 0))
+		title_rect = title_text.get_rect(center=(width // 2, height // 4))
+		surface.blit(title_text, title_rect)
+
+		# Кнопки "Начать заново" и "Выйти в меню"
+		button_size = (250, 80)
+		restart_pos = (width // 2 - button_size[0] // 2, height // 2)
+		menu_pos = (width // 2 - button_size[0] // 2, height // 2 + button_size[1] + 30)
+
+		self.restart_button_rect = pygame.Rect(restart_pos, button_size)
+		self.back_to_menu_button_rect = pygame.Rect(menu_pos, button_size)
+
+		# Кнопка "Начать заново"
+		restart_img = pygame.transform.scale(self.button_bg, button_size)
+		surface.blit(restart_img, self.restart_button_rect)
+		restart_text = self.button_font.render("Again", True, (255, 255, 255))
+		surface.blit(restart_text, restart_text.get_rect(center=self.restart_button_rect.center))
+
+		# Кнопка "Выйти в меню"
+		menu_img = pygame.transform.scale(self.button_bg, button_size)
+		surface.blit(menu_img, self.back_to_menu_button_rect)
+		menu_text = self.button_font.render("Menu", True, (255, 255, 255))
+		surface.blit(menu_text, menu_text.get_rect(center=self.back_to_menu_button_rect.center))
+
 	def draw_start_message(self):
 		if self.game.show_start_message:
 			text = self.score_font.render("Press key to start", True, (0, 150, 0))

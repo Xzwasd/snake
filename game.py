@@ -31,6 +31,8 @@ class Game:
 				self.ui.draw_start_message()
 			elif self.state == "PAUSED":
 				self.ui.draw_pause()
+			elif self.state == "DEAD":
+				self.ui.draw_game_over()
 
 	def update(self):
 		if self.state == "RUNNING":
@@ -68,8 +70,7 @@ class Game:
 			self.save_max_score()
 		self.snake.reset()
 		self.food.position = self.food.generate_random_pos(self.snake.body)
-		self.state = "WAITING"
-		self.score = 0
+		self.state = "DEAD"
 		#self.snake.wall_hit_sound.play()
 
 	def reset(self): #новая игра

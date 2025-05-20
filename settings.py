@@ -3,7 +3,7 @@ import pygame
 
 food_image = pygame.image.load("assets/images/apple.png")
 
-snake_title = pygame.image.load
+#snake_title = pygame.image.load
 
 
 GREEN = (173, 204, 96)

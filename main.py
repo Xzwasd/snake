@@ -93,7 +93,12 @@ while True:
 				elif UI.game.menu_button_rect.collidepoint(event.pos):
 					game.state = "MENU"
 
-
+		if game.state == "DEAD":
+			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+				if game.ui.restart_button_rect.collidepoint(event.pos):
+					game.reset()
+				elif game.ui.back_to_menu_button_rect.collidepoint(event.pos):
+					game.state = "MENU"
 
 	#Drawing
 	bg_raw = pygame.image.load("assets/images/game_bg.png").convert()

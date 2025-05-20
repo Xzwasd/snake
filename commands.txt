@@ -1,4 +1,4 @@
 pip freeze > .\requierements.txt  - список библиотек
 pip install -r .\requierements.txt - установка с библиотек
 pyinstaller --noconsole --onefile --distpath C:\Users\miraa\PycharmProjects\Snake\snake  main.py - компилироввание в файл ИРА
-pyinstaller --noconsole --onefile --distpath C:\Users\miraa\PycharmProjects\Snake\snake  main.py - компилироввание в файл Артем
+pyinstaller --noconsole --onefile --distpath E:\Study\Snake  main.py - компилироввание в файл Артем
