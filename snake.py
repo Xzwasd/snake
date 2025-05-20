@@ -6,6 +6,7 @@ from random import choice
 class Snake:
 	def __init__(self):
 		self.reset()
+		self.direction_changed = False
 		#self.eat_sound = pygame.mixer.Sound("Sounds/eat.mp3")
 		#self.wall_hit_sound = pygame.mixer.Sound("Sounds/wall.mp3")
 
@@ -20,6 +21,7 @@ class Snake:
 			self.add_segment = False
 		else:
 			self.body = self.body[:-1]
+		self.direction_changed = False
 
 	def reset(self):
 		self.add_segment = False

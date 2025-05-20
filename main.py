@@ -29,7 +29,6 @@ while True:
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			sys.exit()
-		print(game.is_starting)
 		if event.type == pygame.KEYDOWN:
 			if event.type == pygame.KEYDOWN:
 				if game.state in ["WAITING", "RUNNING"]:
@@ -48,14 +47,15 @@ while True:
 						print('RIGHT')
 
 					if new_direction:
-						# Проверка на то, что новое направление не противоположно текущему
-						if new_direction + game.snake.direction != Vector2(0, 0):
-							game.snake.direction = new_direction
-							if game.state == "WAITING" and game.is_starting:
-								game.state = "RUNNING"
-								print(game.waiting_flag)
-								game.is_starting = False
-								print(game.waiting_flag)
+						if new_direction and not game.snake.direction_changed:
+							# Проверка на то, что новое направление не противоположно текущему
+							if new_direction + game.snake.direction != Vector2(0, 0):
+								game.snake.direction = new_direction
+								game.snake.direction_changed = True
+								if game.state == "WAITING" and game.is_starting:
+									game.state = "RUNNING"
+									game.is_starting = False
+
 						else:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
