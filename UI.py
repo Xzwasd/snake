@@ -125,6 +125,7 @@ class UI:
 		surface.blit(continue_img, self.game.continue_button_rect)
 		continue_text = self.button_font.render("Continue", True, (255, 255, 255))
 		surface.blit(continue_text, continue_text.get_rect(center=self.game.continue_button_rect.center))
+
 		# Кнопка меню
 		menu_img = pygame.transform.scale(self.button_bg, button_size)
 		surface.blit(menu_img, self.game.menu_button_rect)

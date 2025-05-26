@@ -21,6 +21,8 @@ class Game:
 		self.is_starting = True
 		self.last_toggle_time = time.time()
 		self.blink_interval = 0.7
+		self.game_time = 0  # внутриигровое время в секундах
+		self.last_time_update = None
 
 	def draw(self):
 		if self.state == 'MENU':
@@ -40,18 +42,24 @@ class Game:
 	def update(self):
 		if self.state == "RUNNING":
 			current_time = time.time()
-			# Еда исчезает, если прошло больше 7 секунд
-			if current_time - self.food.spawn_time > 7:
-				self.food.position = self.food.generate_random_pos(self.snake.body)
+			if self.last_time_update is not None:
+				self.game_time += current_time - self.last_time_update  # увеличиваем внутриигровое время
+			self.last_time_update = current_time
+
+			# Проверка таймера еды
+			if self.game_time - self.food.spawn_game_time > 7:
+				self.food.respawn(self.snake.body, self.game_time)
 
 			self.snake.update()
 			self.check_collision_with_food()
 			self.check_collision_with_edges()
 			self.check_collision_with_tail()
+		else:
+			self.last_time_update = None  # Останавливаем счёт при паузе
 
 	def check_collision_with_food(self):
 		if self.snake.body[0] == self.food.position:
-			self.food.position = self.food.generate_random_pos(self.snake.body)
+			self.food.respawn(self.snake.body, self.game_time)
 			self.snake.add_segment = True
 			self.score += 1
 			#self.snake.eat_sound.play()
@@ -75,6 +83,7 @@ class Game:
 		self.food.position = self.food.generate_random_pos(self.snake.body)
 		self.state = "DEAD"
 		#self.snake.wall_hit_sound.play()
+		self.food.respawn(self.snake.body, self.game_time)
 
 	def reset(self): #новая игра
 		self.snake = Snake()
@@ -83,6 +92,8 @@ class Game:
 		self.state = "WAITING"
 		self.waiting_flag = True
 		self.is_starting = True
+		self.game_time = 0
+		self.last_time_update = None
 
 	def load_max_score(self):
 		path = "data/max_score.json"
