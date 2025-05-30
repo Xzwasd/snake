@@ -7,13 +7,36 @@ class Snake:
 	def __init__(self):
 		self.reset()
 		self.direction_changed = False
+		self.head_image = pygame.image.load("assets/images/snake_head.png").convert_alpha()
+		self.body_image = pygame.image.load("assets/images/snake_body.png").convert_alpha()
+
+		# подгон по размеру клетки
+		self.head_image = pygame.transform.scale(self.head_image, (cell_size, cell_size))
+		self.body_image = pygame.transform.scale(self.body_image, (cell_size, cell_size))
 		#self.eat_sound = pygame.mixer.Sound("Sounds/eat.mp3")
 		#self.wall_hit_sound = pygame.mixer.Sound("Sounds/wall.mp3")
 
 	def draw(self):
-		for segment in self.body:
-			segment_rect = (OFFSET + segment.x * cell_size, OFFSET+ segment.y * cell_size, cell_size, cell_size)
-			pygame.draw.rect(screen, DARK_GREEN, segment_rect, 0, 7)
+		head = self.body[0]
+		pos = (OFFSET + head.x * cell_size, OFFSET + head.y * cell_size)
+
+		angle = 0
+		if self.direction == Vector2(1, 0):  # вправо
+			angle = 0
+		elif self.direction == Vector2(0, -1):  # вверх
+			angle = 90
+		elif self.direction == Vector2(-1, 0):  # влево
+			angle = 180
+		elif self.direction == Vector2(0, 1):  # вниз
+			angle = 270
+
+		head_img_rotated = pygame.transform.rotate(self.head_image, angle)
+		screen.blit(head_img_rotated, pos)
+
+		# отрисовка тела
+		for segment in self.body[1:]:
+			pos = (OFFSET + segment.x * cell_size, OFFSET + segment.y * cell_size)
+			screen.blit(self.body_image, pos)
 
 	def update(self):
 		self.body.insert(0, self.body[0] + self.direction)
