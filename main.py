@@ -59,6 +59,7 @@ while True:
 						else:
 							# Нажата пстрелка противоположная текущему движению - ничего не происходит
 							pass
+
 		if game.state == "MENU":
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				for idx, rect in enumerate(UI.volume_rects, start=1):
@@ -74,7 +75,6 @@ while True:
 					pygame.quit()
 					sys.exit()
 
-
 		# Пауза
 		if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 			if game.state == "RUNNING":
@@ -87,7 +87,6 @@ while True:
 					game.state = "RUNNING"
 			elif game.state == "WAITING":
 				game.state = "PAUSED"
-
 
 		if game.state == "PAUSED":
 			UI.draw_pause()

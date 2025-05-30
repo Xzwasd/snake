@@ -46,4 +46,16 @@ class BigFood(Food):
 		screen.blit(self.food_image, food_rect)
 
 
+class PoisonFood(Food):
+	def __init__(self, snake_body):
+		super().__init__(snake_body)
+		self.food_image = pygame.transform.scale(pygame.image.load("assets/images/poison_food.png"), (28, 28))
+
+	def draw(self):
+		food_rect = pygame.Rect(
+			OFFSET + self.position.x * cell_size,
+			OFFSET + self.position.y * cell_size,
+			cell_size, cell_size
+		)
+		screen.blit(self.food_image, food_rect)
 

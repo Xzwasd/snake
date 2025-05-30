@@ -1,9 +1,9 @@
-from food import Food, BigFood
+from food import Food, BigFood, PoisonFood
 from snake import Snake
 from settings import *
 from UI import UI
 import time, json, os
-
+import random
 
 
 class Game:
@@ -23,10 +23,10 @@ class Game:
 		self.blink_interval = 0.7
 		self.game_time = 0  # внутриигровое время в секундах
 		self.last_time_update = None
-		self.big_food = None  # появляется позже
-		self.big_food_cooldown = 15
-		self.big_food_lifetime = 10
-		self.last_big_food_spawn_time = 0
+		self.special_food = None  # заменяет big_food
+		self.special_food_cooldown = 15
+		self.special_food_lifetime = 10
+		self.last_special_food_spawn_time = 0
 
 	def draw(self):
 		if self.state == 'MENU':
@@ -44,9 +44,8 @@ class Game:
 			elif self.state == "RUNNING":
 				self.ui.draw_score()
 
-		if self.big_food:
-			self.big_food.draw()
-
+		if self.special_food:
+			self.special_food.draw()
 
 	def update(self):
 		if self.state == "RUNNING":
@@ -64,21 +63,22 @@ class Game:
 			self.check_collision_with_edges()
 			self.check_collision_with_tail()
 
-			if self.big_food is None and self.game_time - self.last_big_food_spawn_time >= self.big_food_cooldown:
-				self.big_food = BigFood(self.snake.body)
-				self.big_food.spawn_game_time = self.game_time
-				self.last_big_food_spawn_time = self.game_time
+			# Удаление BigFood / PoisonFood, если прошло 10 сек
+			if self.special_food and self.game_time - self.special_food.spawn_game_time >= self.special_food_lifetime:
+				self.special_food = None
 
-			# BigFood исчезает, если не съедена за 7 сек
-			if self.big_food and self.game_time - self.big_food.spawn_game_time > self.big_food_lifetime:
-				self.big_food = None
+			if self.special_food is None and self.game_time - self.last_special_food_spawn_time >= self.special_food_cooldown:
+				if random.choice([True, False]):
+					self.special_food = BigFood(self.snake.body)
+				else:
+					self.special_food = PoisonFood(self.snake.body)
+				self.special_food.spawn_game_time = self.game_time
+				self.last_special_food_spawn_time = self.game_time
 
-			self.check_collision_with_food()
-			self.check_collision_with_big_food()
+			self.check_collision_with_special_food()
 
 		else:
 			self.last_time_update = None  # Останавливаем счёт при паузе
-
 
 	def check_collision_with_food(self):
 		if self.snake.body[0] == self.food.position:
@@ -87,11 +87,20 @@ class Game:
 			self.score += 1
 			#self.snake.eat_sound.play()
 
-	def check_collision_with_big_food(self):
-		if self.big_food and self.snake.body[0] == self.big_food.position:
-			self.snake.add_segment = 3  # ⬅ добавляем 3 сегмента
-			self.score += 3
-			self.big_food = None
+	def check_collision_with_special_food(self):
+		if self.special_food and self.snake.body[0] == self.special_food.position:
+			if isinstance(self.special_food, BigFood):
+				self.snake.add_segment = 3
+				self.score += 3
+			elif isinstance(self.special_food, PoisonFood):
+				# Удаляем 3 сегмента с хвоста
+				for _ in range(3):
+					if len(self.snake.body) > 1:
+						self.snake.body.pop()
+					else:
+						self.game_over()
+						return
+			self.special_food = None
 
 	def check_collision_with_edges(self):
 		if self.snake.body[0].x == number_of_cells or self.snake.body[0].x == -1:

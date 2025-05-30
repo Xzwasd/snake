@@ -13,8 +13,11 @@ class Snake:
 		# подгон по размеру клетки
 		self.head_image = pygame.transform.scale(self.head_image, (cell_size, cell_size))
 		self.body_image = pygame.transform.scale(self.body_image, (cell_size, cell_size))
+
+
 		#self.eat_sound = pygame.mixer.Sound("Sounds/eat.mp3")
 		#self.wall_hit_sound = pygame.mixer.Sound("Sounds/wall.mp3")
+
 
 	def draw(self):
 		head = self.body[0]
