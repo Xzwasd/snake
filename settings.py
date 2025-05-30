@@ -5,8 +5,6 @@ food_image = pygame.image.load("assets/images/apple.png")
 big_food_image = pygame.image.load("assets/images/big_food.png")
 poison_food_image = pygame.image.load("assets/images/poison_food.png")
 
-#snake_title = pygame.image.load
-
 
 GREEN = (173, 204, 96)
 DARK_GREEN = (43, 51, 24)

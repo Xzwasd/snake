@@ -34,6 +34,7 @@ class UI:
 		self.vol_img_active = pygame.image.load("assets/images/volume_active.png").convert_alpha()
 		self.vol_img_inactive = pygame.transform.scale(self.vol_img_inactive, self.vol_size)
 		self.vol_img_active = pygame.transform.scale(self.vol_img_active, self.vol_size)
+
 		# --- Громкость ---
 		self.music_volume = 5
 		spacing = 8
@@ -44,7 +45,6 @@ class UI:
 			pygame.Rect(start_x + i * (self.vol_size[0] + spacing), y_pos, *self.vol_size)
 			for i in range(10)
 		]
-
 
 		# --- Мигание подсказки на старте ---
 		self.show_start_message = True

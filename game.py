@@ -13,20 +13,29 @@ class Game:
 		self.state = "MENU"
 		self.score = 0
 		self.max_score = self.load_max_score()
-		self.music_volume = 5
-		pygame.mixer.music.set_volume(self.music_volume / 10)
+
 		self.ui = UI(self)
+
 		# Мигание подсказки
 		self.waiting_flag = True
 		self.is_starting = True
 		self.last_toggle_time = time.time()
 		self.blink_interval = 0.7
-		self.game_time = 0  # внутриигровое время в секундах
+
+		self.game_time = 0
 		self.last_time_update = None
-		self.special_food = None  # заменяет big_food
+
+		self.special_food = None
 		self.special_food_cooldown = 15
 		self.special_food_lifetime = 10
 		self.last_special_food_spawn_time = 0
+
+		self.music_volume = 5
+		pygame.mixer.music.set_volume(self.music_volume / 10)
+		self.death_sound = pygame.mixer.Sound("assets/sounds/death_sound.mp3")
+		self.eating_sound = pygame.mixer.Sound("assets/sounds/eating_sound.mp3")
+		self.drinking_sound = pygame.mixer.Sound("assets/sounds/drinking_sound.mp3")
+		self.drinking_sound.set_volume(0.4)
 
 	def draw(self):
 		if self.state == 'MENU':
@@ -51,7 +60,7 @@ class Game:
 		if self.state == "RUNNING":
 			current_time = time.time()
 			if self.last_time_update is not None:
-				self.game_time += current_time - self.last_time_update  # увеличиваем внутриигровое время
+				self.game_time += current_time - self.last_time_update
 			self.last_time_update = current_time
 
 			# Проверка таймера еды
@@ -85,7 +94,7 @@ class Game:
 			self.food.respawn(self.snake.body, self.game_time)
 			self.snake.add_segment = True
 			self.score += 1
-			#self.snake.eat_sound.play()
+			self.eating_sound.play()
 
 	def check_collision_with_special_food(self):
 		if self.special_food and self.snake.body[0] == self.special_food.position:
@@ -93,13 +102,13 @@ class Game:
 				self.snake.add_segment = 3
 				self.score += 3
 			elif isinstance(self.special_food, PoisonFood):
-				# Удаляем 3 сегмента с хвоста
 				for _ in range(3):
-					if len(self.snake.body) > 1:
+					if len(self.snake.body) > 3:
 						self.snake.body.pop()
 					else:
 						self.game_over()
 						return
+			self.drinking_sound.play()
 			self.special_food = None
 
 	def check_collision_with_edges(self):
@@ -120,8 +129,8 @@ class Game:
 		self.snake.reset()
 		self.food.position = self.food.generate_random_pos(self.snake.body)
 		self.state = "DEAD"
-		#self.snake.wall_hit_sound.play()
 		self.food.respawn(self.snake.body, self.game_time)
+		self.death_sound.play()
 
 	def reset(self): #новая игра
 		self.snake = Snake()
