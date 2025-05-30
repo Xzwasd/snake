@@ -59,9 +59,12 @@ class UI:
 		surface.blit(bg, (0, 0))
 
 		# --- Название ---
-		title_text = self.title_font.render("SNAKE", True, (255, 255, 255))
-		title_rect = title_text.get_rect(center=(width // 2, height // 5))
-		surface.blit(title_text, title_rect)
+		title_image = pygame.image.load("assets/images/title.png").convert_alpha()
+
+		# При необходимости масштабируем:
+		#title_image = pygame.transform.scale(title_image, (width // 2, height // 8))
+		title_rect = title_image.get_rect(center=(width // 2, height // 5))
+		surface.blit(title_image, title_rect)
 
 		# --- High Score ---
 		high_score = self.game.max_score
@@ -180,6 +183,8 @@ class UI:
 		surface = self.screen
 		width, height = surface.get_size()
 		score_pos = (width // 2, height - (OFFSET // 2))
-		score_surface = self.score_font.render(f'Score {str(self.game.score)}', True, DARK_GREEN)
-		screen.blit(score_surface, score_pos)
 
+		score_surface = self.score_font.render(f'Score {str(self.game.score)}', True, DARK_GREEN)
+		score_rect = score_surface.get_rect(center=score_pos)
+
+		screen.blit(score_surface, score_rect)
