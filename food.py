@@ -30,3 +30,20 @@ class Food:
 	def respawn(self, snake_body, current_game_time):
 		self.position = self.generate_random_pos(snake_body)
 		self.spawn_game_time = current_game_time  # Обновляем таймер в игровом времени
+
+
+class BigFood(Food):
+	def __init__(self, snake_body):
+		super().__init__(snake_body)
+		self.food_image = pygame.transform.scale(big_food_image, (28, 28))  # картинка для BigFood
+
+	def draw(self):
+		food_rect = pygame.Rect(
+			OFFSET + self.position.x * cell_size,
+			OFFSET + self.position.y * cell_size,
+			cell_size, cell_size
+		)
+		screen.blit(self.food_image, food_rect)
+
+
+
