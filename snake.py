@@ -4,7 +4,8 @@ from settings import *
 from random import choice
 
 class Snake:
-	def __init__(self):
+	def __init__(self, blocked_positions=None):
+		self.blocked_positions = blocked_positions if blocked_positions else []
 		self.reset()
 		self.direction_changed = False
 		self.head_image = pygame.image.load("assets/images/snake_head.png").convert_alpha()
@@ -47,18 +48,36 @@ class Snake:
 	def reset(self):
 		self.add_segment = False
 
-		# Возможные направления: вправо, влево, вниз, вверх
 		directions = [
-			Vector2(1, 0),
-			Vector2(-1, 0),
-			Vector2(0, 1),
-			Vector2(0, -1)
+			Vector2(1, 0),  # вправо
+			Vector2(-1, 0),  # влево
+			Vector2(0, 1),  # вниз
+			Vector2(0, -1)  # вверх
 		]
 
-		self.direction = choice(directions)
-
-		# Размер тела змейки
 		snake_length = 3
+		valid_starts = []
+
+		for x in range(number_of_cells):
+			for y in range(number_of_cells):
+				head = Vector2(x, y)
+				for direction in directions:
+					body = [head + direction * i for i in range(snake_length)]
+
+					# Проверка: ни один сегмент тела не должен быть в стене или вне поля
+					if all(
+							0 <= segment.x < number_of_cells and
+							0 <= segment.y < number_of_cells and
+							segment not in self.blocked_positions
+							for segment in body):
+						valid_starts.append((body, direction))
+
+		# Если ничего не подошло
+		if not valid_starts:
+			raise Exception("Нет подходящих стартовых позиций для змейки. Все заблокированы стенами.")
+
+		# Выбор случайной подходящей позиции
+		self.body, self.direction = random.choice(valid_starts)
 
 		# Расчёт допустимых координат головы в зависимости от направления
 		if self.direction == Vector2(1, 0):  # вправо

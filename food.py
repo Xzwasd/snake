@@ -5,7 +5,8 @@ from settings import *
 
 
 class Food:
-	def __init__(self, snake_body):
+	def __init__(self, snake_body, wall_blocks=[]):
+		self.wall_blocks = wall_blocks
 		self.position = self.generate_random_pos(snake_body)
 		self.spawn_game_time = 0  # Время появления еды в игровом времени
 
@@ -22,7 +23,7 @@ class Food:
 
 	def generate_random_pos(self, snake_body):
 		position = self.generate_random_cell()
-		while position in snake_body:
+		while position in snake_body or position in self.wall_blocks:
 			position = self.generate_random_cell()
 		self.spawn_time = time.time() # Сброс таймера при новом размещении еды
 		return position
@@ -33,8 +34,8 @@ class Food:
 
 
 class BigFood(Food):
-	def __init__(self, snake_body):
-		super().__init__(snake_body)
+	def __init__(self, snake_body, wall_blocks=[]):
+		super().__init__(snake_body, wall_blocks)
 		self.food_image = pygame.transform.scale(big_food_image, (28, 28))  # картинка для BigFood
 
 	def draw(self):
@@ -47,8 +48,8 @@ class BigFood(Food):
 
 
 class PoisonFood(Food):
-	def __init__(self, snake_body):
-		super().__init__(snake_body)
+	def __init__(self, snake_body, wall_blocks=[]):
+		super().__init__(snake_body, wall_blocks)
 		self.food_image = pygame.transform.scale(pygame.image.load("assets/images/poison_food.png"), (28, 28))
 
 	def draw(self):

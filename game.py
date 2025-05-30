@@ -1,6 +1,7 @@
 from food import Food, BigFood, PoisonFood
 from snake import Snake
 from settings import *
+from wall import Walls
 from UI import UI
 import time, json, os
 import random
@@ -8,8 +9,9 @@ import random
 
 class Game:
 	def __init__(self):
-		self.snake = Snake()
-		self.food = Food(self.snake.body)
+		self.walls = Walls()
+		self.snake = Snake(self.walls.blocks)
+		self.food = Food(self.snake.body, self.walls.blocks)
 		self.state = "MENU"
 		self.score = 0
 		self.max_score = self.load_max_score()
@@ -43,6 +45,9 @@ class Game:
 		else:
 			self.food.draw()
 			self.snake.draw()
+			if self.special_food:
+				self.special_food.draw()
+			self.walls.draw(self.ui.screen)
 			if self.state == "WAITING":
 				self.ui.draw_start_message()
 				self.ui.draw_score()
@@ -53,8 +58,6 @@ class Game:
 			elif self.state == "RUNNING":
 				self.ui.draw_score()
 
-		if self.special_food:
-			self.special_food.draw()
 
 	def update(self):
 		if self.state == "RUNNING":
@@ -71,6 +74,7 @@ class Game:
 			self.check_collision_with_food()
 			self.check_collision_with_edges()
 			self.check_collision_with_tail()
+			self.check_collision_with_walls()
 
 			# Удаление BigFood / PoisonFood, если прошло 10 сек
 			if self.special_food and self.game_time - self.special_food.spawn_game_time >= self.special_food_lifetime:
@@ -88,6 +92,10 @@ class Game:
 
 		else:
 			self.last_time_update = None  # Останавливаем счёт при паузе
+
+	def check_collision_with_walls(self):
+		if self.walls.collides_with(self.snake.body[0]):
+			self.game_over()
 
 	def check_collision_with_food(self):
 		if self.snake.body[0] == self.food.position:
@@ -126,15 +134,16 @@ class Game:
 		if self.score > self.max_score:
 			self.max_score = self.score
 			self.save_max_score()
-		self.snake.reset()
 		self.food.position = self.food.generate_random_pos(self.snake.body)
 		self.state = "DEAD"
 		self.food.respawn(self.snake.body, self.game_time)
 		self.death_sound.play()
 
 	def reset(self): #новая игра
-		self.snake = Snake()
-		self.food = Food(self.snake.body)
+		self.walls = Walls()
+		self.snake = Snake(self.walls.blocks)
+		self.food = Food(self.snake.body, self.walls.blocks)
+		self.special_food = None
 		self.score = 0
 		self.state = "WAITING"
 		self.waiting_flag = True
