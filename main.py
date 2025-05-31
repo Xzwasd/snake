@@ -126,5 +126,11 @@ while True:
 
 	game.draw()
 
+	if game.snake.reversed_controls:
+		playfield_size = cell_size * number_of_cells
+		overlay = pygame.Surface((playfield_size, playfield_size), pygame.SRCALPHA)
+		overlay.fill((128, 0, 128, 30))
+		screen.blit(overlay, (OFFSET, OFFSET))
+
 	pygame.display.update()
 	clock.tick(60)

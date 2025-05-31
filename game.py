@@ -66,6 +66,9 @@ class Game:
 				self.game_time += current_time - self.last_time_update
 			self.last_time_update = current_time
 
+			if self.snake.reversed_controls and current_time >= self.snake.reverse_end_time:
+				self.snake.reversed_controls = False
+
 			# Проверка таймера еды
 			if self.game_time - self.food.spawn_game_time > 7:
 				self.food.respawn(self.snake.body, self.game_time)
@@ -147,6 +150,8 @@ class Game:
 	def reset(self): #новая игра
 		self.walls = Walls()
 		self.snake = Snake(self.walls.blocks)
+		self.snake.reversed_controls = False
+		self.snake.reverse_end_time = 0
 		self.food = Food(self.snake.body, self.walls.blocks)
 		self.special_food = None
 		self.score = 0
