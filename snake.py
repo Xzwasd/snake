@@ -15,6 +15,9 @@ class Snake:
 		self.head_image = pygame.transform.scale(self.head_image, (cell_size, cell_size))
 		self.body_image = pygame.transform.scale(self.body_image, (cell_size, cell_size))
 
+		self.reversed_controls = False
+		self.reverse_end_time = 0
+
 	def draw(self):
 		head = self.body[0]
 		pos = (OFFSET + head.x * cell_size, OFFSET + head.y * cell_size)

@@ -1,4 +1,4 @@
-from food import Food, BigFood, PoisonFood
+from food import Food, BigFood, PoisonFood, ReversedFood
 from snake import Snake
 from settings import *
 from wall import Walls
@@ -81,10 +81,11 @@ class Game:
 				self.special_food = None
 
 			if self.special_food is None and self.game_time - self.last_special_food_spawn_time >= self.special_food_cooldown:
-				if random.choice([True, False]):
-					self.special_food = BigFood(self.snake.body)
-				else:
-					self.special_food = PoisonFood(self.snake.body)
+				self.special_food = random.choice([
+					BigFood(self.snake.body),
+					PoisonFood(self.snake.body),
+					ReversedFood(self.snake.body)
+				])
 				self.special_food.spawn_game_time = self.game_time
 				self.last_special_food_spawn_time = self.game_time
 
@@ -116,6 +117,10 @@ class Game:
 					else:
 						self.game_over()
 						return
+			elif isinstance(self.special_food, ReversedFood):
+				self.snake.reversed_controls = True
+				self.snake.reverse_end_time = time.time() + 7
+
 			self.drinking_sound.play()
 			self.special_food = None
 

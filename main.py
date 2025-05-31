@@ -33,18 +33,24 @@ while True:
 			if event.type == pygame.KEYDOWN:
 				if game.state in ["WAITING", "RUNNING"]:
 					new_direction = None
-					if event.key == pygame.K_UP:
-						new_direction = Vector2(0, -1)
-						print('UP')
-					elif event.key == pygame.K_DOWN:
-						new_direction = Vector2(0, 1)
-						print('DOWN')
-					elif event.key == pygame.K_LEFT:
-						new_direction = Vector2(-1, 0)
-						print('LEFT')
-					elif event.key == pygame.K_RIGHT:
-						new_direction = Vector2(1, 0)
-						print('RIGHT')
+					if game.snake.reversed_controls:
+						if event.key == pygame.K_UP:
+							new_direction = Vector2(0, 1)
+						elif event.key == pygame.K_DOWN:
+							new_direction = Vector2(0, -1)
+						elif event.key == pygame.K_LEFT:
+							new_direction = Vector2(1, 0)
+						elif event.key == pygame.K_RIGHT:
+							new_direction = Vector2(-1, 0)
+					else:
+						if event.key == pygame.K_UP:
+							new_direction = Vector2(0, -1)
+						elif event.key == pygame.K_DOWN:
+							new_direction = Vector2(0, 1)
+						elif event.key == pygame.K_LEFT:
+							new_direction = Vector2(-1, 0)
+						elif event.key == pygame.K_RIGHT:
+							new_direction = Vector2(1, 0)
 
 					if new_direction:
 						if new_direction and not game.snake.direction_changed:
