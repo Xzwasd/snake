@@ -1,7 +1,6 @@
 import random
 from pygame.math import Vector2
 from settings import *
-from random import choice
 
 class Snake:
 	def __init__(self, blocked_positions=None):
@@ -10,17 +9,19 @@ class Snake:
 		self.direction_changed = False
 		self.head_image = pygame.image.load("assets/images/snake_head.png").convert_alpha()
 		self.body_image = pygame.image.load("assets/images/snake_body.png").convert_alpha()
+		self.tail_image = pygame.image.load("assets/images/snake_tail.png").convert_alpha()
 
 		# подгон по размеру клетки
 		self.head_image = pygame.transform.scale(self.head_image, (cell_size, cell_size))
 		self.body_image = pygame.transform.scale(self.body_image, (cell_size, cell_size))
+		self.tail_image = pygame.transform.scale(self.tail_image, (cell_size, cell_size))
 
 		self.reversed_controls = False
 		self.reverse_end_time = 0
 
 	def draw(self):
 		head = self.body[0]
-		pos = (OFFSET + head.x * cell_size, OFFSET + head.y * cell_size)
+		head_pos = (OFFSET + head.x * cell_size, OFFSET + head.y * cell_size)
 
 		angle = 0
 		if self.direction == Vector2(1, 0):  # вправо
@@ -33,12 +34,29 @@ class Snake:
 			angle = 270
 
 		head_img_rotated = pygame.transform.rotate(self.head_image, angle)
-		screen.blit(head_img_rotated, pos)
+		screen.blit(head_img_rotated, head_pos)
 
 		# отрисовка тела
-		for segment in self.body[1:]:
+		for segment in self.body[1:-1]:
 			pos = (OFFSET + segment.x * cell_size, OFFSET + segment.y * cell_size)
 			screen.blit(self.body_image, pos)
+
+		tail = self.body[-1]
+		tail_pos = (OFFSET + tail.x * cell_size, OFFSET + tail.y * cell_size)
+
+		if len(self.body) > 1:
+			diff = self.body[-2] - tail
+			if diff == Vector2(1, 0):
+				tail_angle = 0
+			elif diff == Vector2(-1, 0):
+				tail_angle = 180
+			elif diff == Vector2(0, 1):
+				tail_angle = 270
+			elif diff == Vector2(0, -1):
+				tail_angle = 90
+
+		tail_img_rotated = pygame.transform.rotate(self.tail_image, tail_angle)
+		screen.blit(tail_img_rotated, tail_pos)
 
 	def update(self):
 		self.body.insert(0, self.body[0] + self.direction)
