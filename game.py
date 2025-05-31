@@ -66,7 +66,7 @@ class Game:
 				self.game_time += current_time - self.last_time_update
 			self.last_time_update = current_time
 
-			if self.snake.reversed_controls and current_time >= self.snake.reverse_end_time:
+			if self.snake.reversed_controls and self.game_time >= self.snake.reverse_end_time:
 				self.snake.reversed_controls = False
 
 			# Проверка таймера еды
@@ -85,9 +85,9 @@ class Game:
 
 			if self.special_food is None and self.game_time - self.last_special_food_spawn_time >= self.special_food_cooldown:
 				self.special_food = random.choice([
-					BigFood(self.snake.body),
-					PoisonFood(self.snake.body),
-					ReversedFood(self.snake.body)
+					BigFood(self.snake.body, self.walls.blocks),
+					PoisonFood(self.snake.body, self.walls.blocks),
+					ReversedFood(self.snake.body, self.walls.blocks)
 				])
 				self.special_food.spawn_game_time = self.game_time
 				self.last_special_food_spawn_time = self.game_time
@@ -122,7 +122,7 @@ class Game:
 						return
 			elif isinstance(self.special_food, ReversedFood):
 				self.snake.reversed_controls = True
-				self.snake.reverse_end_time = time.time() + 7
+				self.snake.reverse_end_time = self.game_time + 7
 
 			self.drinking_sound.play()
 			self.special_food = None
